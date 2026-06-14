@@ -4,6 +4,7 @@ import Site1Artisan from "./pages/Site1Artisan";
 import Site2Boutique from "./pages/Site2Boutique";
 import Site3Edgy from "./pages/Site3Edgy";
 import Site4Minimalist from "./pages/Site4Minimalist";
+import Site5Grunge from "./pages/Site5Grunge";
 
 export default function App() {
   return (
