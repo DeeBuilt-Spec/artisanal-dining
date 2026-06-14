@@ -3,12 +3,19 @@ import { useEffect, useState } from "react";
 import { olea, getStatus } from "@/content/olea";
 
 const ink = "#111111";
-const grey = "#888888";
-const rule = "#e6e6e6";
+const grey = "#7a7a7a";
+const paper = "#f4f1ec";
+const rule = "#e3ddd2";
 
-const base = {
+const sans = {
   fontFamily: "'Inter Tight', Inter, system-ui, sans-serif",
   fontFeatureSettings: "'tnum' 1, 'ss01' 1",
+} as const;
+
+const display = {
+  fontFamily: "'Inter Tight', Inter, system-ui, sans-serif",
+  fontWeight: 500,
+  letterSpacing: "-0.03em",
 } as const;
 
 function Status() {
@@ -18,7 +25,7 @@ function Status() {
     return () => clearInterval(i);
   }, []);
   return (
-    <span className="inline-flex items-center gap-2 text-[13px]" style={{ color: ink }}>
+    <span className="inline-flex items-center gap-2 text-[12px]" style={{ color: ink }}>
       <span
         aria-hidden
         className="inline-block"
@@ -29,210 +36,194 @@ function Status() {
   );
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+function Nav() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[96px_1fr] gap-2 md:gap-8 py-10">
-      <div
-        className="text-[11px] uppercase tracking-[0.18em]"
-        style={{ color: grey }}
-      >
-        {label}
+    <nav
+      className="sticky top-0 z-30"
+      style={{ backgroundColor: paper, borderBottom: `1px solid ${rule}` }}
+    >
+      <div className="mx-auto max-w-[1080px] px-6 md:px-10 py-5 flex items-center justify-between">
+        <Link to="/" className="text-[14px]" style={{ ...sans, color: ink, letterSpacing: "0.02em" }}>
+          {olea.name}
+        </Link>
+        <ul className="hidden md:flex items-center gap-8 text-[13px]" style={{ color: ink }}>
+          <li><a href="#tonight" className="hover:opacity-60">Tonight</a></li>
+          <li><a href="#chef" className="hover:opacity-60">Chef</a></li>
+          <li><a href="#visit" className="hover:opacity-60">Visit</a></li>
+        </ul>
+        <div className="flex items-center gap-5 text-[13px]">
+          <a href={olea.links.reserve} className="hidden md:inline hover:opacity-60" style={{ color: ink }}>
+            Reserve
+          </a>
+          <a
+            href={olea.links.orderOnline}
+            className="inline-flex items-center px-4 py-2 text-[12px]"
+            style={{ backgroundColor: ink, color: paper, letterSpacing: "0.04em" }}
+          >
+            Order online
+          </a>
+        </div>
       </div>
-      <div className="text-[14px] leading-[1.7]" style={{ color: ink }}>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-function Hairline() {
-  return <div style={{ height: 1, backgroundColor: rule }} />;
-}
-
-function PriceRow({ name, price }: { name: string; price: string }) {
-  return (
-    <div className="flex items-baseline gap-4 py-1.5">
-      <span className="flex-1">{name}</span>
-      <span className="tabular-nums" style={{ color: ink }}>
-        {price}
-      </span>
-    </div>
+    </nav>
   );
 }
 
 export default function Site4Minimalist() {
   return (
-    <main className="min-h-screen" style={{ ...base, backgroundColor: "#ffffff", color: ink }}>
-      <div className="mx-auto w-full max-w-[640px] px-6 md:px-0 py-12 md:py-20">
-        {/* Nav */}
-        <header className="flex flex-wrap items-baseline justify-between gap-3">
-          <Link to="/" className="text-[14px]" style={{ color: ink }}>
-            {olea.name}
-          </Link>
-          <Status />
-        </header>
+    <main className="min-h-screen" style={{ ...sans, backgroundColor: paper, color: ink }}>
+      <Nav />
 
-        <div className="mt-10"><Hairline /></div>
-
-        {/* Lead */}
-        <section className="py-12">
-          <p className="text-[18px] leading-[1.55]" style={{ color: ink }}>
-            {olea.positioning}
-          </p>
-          <p className="mt-8 text-[14px]" style={{ color: ink }}>
-            <a href={olea.links.orderOnline} className="underline underline-offset-4 decoration-1 hover:opacity-60">
-              Order online
-            </a>
-            <span className="px-2" style={{ color: grey }}>·</span>
-            <a href={olea.links.reserve} className="underline underline-offset-4 decoration-1 hover:opacity-60">
-              Reserve a table
-            </a>
-          </p>
-        </section>
-
-        <Hairline />
-
-        {/* Single photo */}
-        <div className="py-10">
-          <img
-            src={olea.hero.image}
-            alt=""
-            width={280}
-            height={280}
-            loading="lazy"
-            className="block"
-            style={{ width: 280, height: 280, objectFit: "cover" }}
-          />
-        </div>
-
-        <Hairline />
-
-        {/* Menu */}
-        <Row label="Menu">
-          {olea.dishes.map((d) => (
-            <PriceRow key={d.n} name={d.name} price={d.price} />
-          ))}
-          <div className="mt-6 pt-4" style={{ borderTop: `1px solid ${rule}` }}>
-            <PriceRow name={olea.tonight.name} price={olea.tonight.price} />
-            <p className="mt-1 text-[13px]" style={{ color: grey }}>
-              {olea.tonight.description}
-            </p>
-          </div>
-        </Row>
-
-        <Hairline />
-
-        {/* Wine */}
-        <Row label="Wine">
-          {olea.wines.map((w) => (
-            <PriceRow key={w.name} name={w.name} price={w.price} />
-          ))}
-        </Row>
-
-        <Hairline />
-
-        {/* Chef */}
-        <Row label="Chef">
-          <p className="text-[14px]">
-            {olea.chef.name}, {olea.chef.role}
-          </p>
-          {olea.chef.bio.map((p, i) => (
-            <p key={i} className="mt-3">
-              {p}
-            </p>
-          ))}
-          <p className="mt-3 text-[13px]" style={{ color: grey }}>
-            {olea.chef.credentials.join(" · ")}
-          </p>
-        </Row>
-
-        <Hairline />
-
-        {/* Events */}
-        <Row label="Events">
-          {olea.events.map((e) => (
-            <div key={e.title} className="grid grid-cols-[110px_1fr] gap-4 py-2">
-              <span className="tabular-nums" style={{ color: grey }}>{e.date}</span>
-              <span>
-                {e.title}
-                <span className="block text-[13px]" style={{ color: grey }}>
-                  {e.description}
-                </span>
-              </span>
+      {/* Hero — asymmetric: large mark left, single photo right */}
+      <section className="mx-auto max-w-[1080px] px-6 md:px-10 pt-20 md:pt-32 pb-20 md:pb-28">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14 items-end">
+          <div className="md:col-span-7">
+            <div className="text-[11px] uppercase tracking-[0.28em]" style={{ color: grey }}>
+              {olea.established} · Brooklyn
             </div>
-          ))}
-        </Row>
-
-        <Hairline />
-
-        {/* Press */}
-        <Row label="Press">
-          <p style={{ color: grey }}>{olea.press.join(", ")}</p>
-        </Row>
-
-        <Hairline />
-
-        {/* Visit */}
-        <Row label="Visit">
-          <p>{olea.visit.address.join(", ")}</p>
-          <p className="mt-2">
-            {olea.visit.hours
-              .map(([d, h]) => `${d} ${h}`)
-              .join(" · ")}
-          </p>
-          <p className="mt-2" style={{ color: grey }}>
-            {olea.visit.phone} · {olea.visit.email}
-          </p>
-        </Row>
-
-        <Hairline />
-
-        {/* Newsletter */}
-        <Row label="Newsletter">
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="flex items-baseline gap-4"
-          >
-            <input
-              type="email"
-              placeholder="your@email"
-              className="flex-1 bg-transparent text-[14px] py-2 outline-none"
-              style={{ borderBottom: `1px solid ${ink}`, color: ink }}
-            />
-            <button
-              type="submit"
-              className="text-[14px] underline underline-offset-4 decoration-1 hover:opacity-60"
+            <h1
+              className="mt-6 text-[64px] md:text-[112px] leading-[0.95]"
+              style={display}
+            >
+              {olea.name}.
+            </h1>
+            <p
+              className="mt-8 max-w-[420px] text-[16px] leading-[1.55]"
               style={{ color: ink }}
             >
-              Subscribe
-            </button>
-          </form>
-          <p className="mt-3 text-[13px]" style={{ color: grey }}>
-            Sent when the menu changes.
-          </p>
-        </Row>
+              {olea.positioning}
+            </p>
+            <div className="mt-10 flex items-center gap-6">
+              <Status />
+              <span style={{ color: rule }}>|</span>
+              <a
+                href={olea.links.reserve}
+                className="text-[13px] underline underline-offset-[6px] decoration-1 hover:opacity-60"
+              >
+                Reserve a table
+              </a>
+            </div>
+          </div>
 
-        <Hairline />
+          <div className="md:col-span-5">
+            <img
+              src={olea.hero.image}
+              alt="A plate at Olea"
+              loading="lazy"
+              className="block w-full"
+              style={{ aspectRatio: "4 / 5", objectFit: "cover" }}
+            />
+          </div>
+        </div>
+      </section>
 
-        {/* Footer */}
-        <footer className="py-10 text-[13px]" style={{ color: grey }}>
-          <p style={{ color: ink }}>
-            {olea.name} · {olea.established}
-          </p>
-          <p className="mt-3 flex flex-wrap gap-x-3 gap-y-1">
-            <a href={olea.links.privateDining} className="hover:underline underline-offset-4">Private dining</a>
-            <span>·</span>
-            <a href={olea.links.giftCards} className="hover:underline underline-offset-4">Gift cards</a>
-            <span>·</span>
-            <a href={olea.links.careers} className="hover:underline underline-offset-4">Careers</a>
-            <span>·</span>
-            <a href={`https://instagram.com/${olea.social.instagram.replace("@", "")}`} className="hover:underline underline-offset-4">
-              Instagram {olea.social.instagram}
-            </a>
-          </p>
-          <p className="mt-3">Please notify us of any allergies.</p>
-        </footer>
+      <div className="mx-auto max-w-[1080px] px-6 md:px-10">
+        <div style={{ height: 1, backgroundColor: rule }} />
       </div>
+
+      {/* Tonight — one featured offering, nothing else */}
+      <section id="tonight" className="mx-auto max-w-[1080px] px-6 md:px-10 py-20 md:py-28">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+          <div className="md:col-span-3 text-[11px] uppercase tracking-[0.28em]" style={{ color: grey }}>
+            Tonight
+          </div>
+          <div className="md:col-span-9">
+            <h2 className="text-[36px] md:text-[52px] leading-[1.05]" style={display}>
+              {olea.tonight.name}
+            </h2>
+            <p className="mt-5 max-w-[520px] text-[15px] leading-[1.6]" style={{ color: ink }}>
+              {olea.tonight.description}
+            </p>
+            <div className="mt-8 flex items-baseline gap-6 text-[13px]">
+              <span className="tabular-nums" style={{ color: ink }}>
+                ${olea.tonight.price} per guest
+              </span>
+              <a
+                href={olea.links.reserve}
+                className="underline underline-offset-[6px] decoration-1 hover:opacity-60"
+              >
+                Book the tasting
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-[1080px] px-6 md:px-10">
+        <div style={{ height: 1, backgroundColor: rule }} />
+      </div>
+
+      {/* Chef — short, no portrait */}
+      <section id="chef" className="mx-auto max-w-[1080px] px-6 md:px-10 py-20 md:py-28">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+          <div className="md:col-span-3 text-[11px] uppercase tracking-[0.28em]" style={{ color: grey }}>
+            Chef
+          </div>
+          <div className="md:col-span-9">
+            <p className="max-w-[560px] text-[20px] md:text-[24px] leading-[1.4]" style={{ color: ink }}>
+              “{olea.chef.quote}”
+            </p>
+            <p className="mt-8 text-[13px]" style={{ color: grey }}>
+              {olea.chef.name}, {olea.chef.role} · {olea.chef.credentials[0]}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-[1080px] px-6 md:px-10">
+        <div style={{ height: 1, backgroundColor: rule }} />
+      </div>
+
+      {/* Visit — address + hours, anchored */}
+      <section id="visit" className="mx-auto max-w-[1080px] px-6 md:px-10 py-20 md:py-28">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
+          <div className="md:col-span-3 text-[11px] uppercase tracking-[0.28em]" style={{ color: grey }}>
+            Visit
+          </div>
+          <div className="md:col-span-5">
+            <p className="text-[15px] leading-[1.7]" style={{ color: ink }}>
+              {olea.visit.address[0]}
+              <br />
+              {olea.visit.address[1]}
+            </p>
+            <p className="mt-4 text-[13px]" style={{ color: grey }}>
+              {olea.visit.phone}
+              <br />
+              {olea.visit.email}
+            </p>
+          </div>
+          <div className="md:col-span-4">
+            {olea.visit.hours.map(([d, h]) => (
+              <div
+                key={d}
+                className="flex justify-between py-2 text-[13px]"
+                style={{ borderBottom: `1px solid ${rule}`, color: ink }}
+              >
+                <span>{d}</span>
+                <span className="tabular-nums" style={{ color: grey }}>{h}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer
+        className="mx-auto max-w-[1080px] px-6 md:px-10 py-12 flex flex-wrap items-baseline justify-between gap-4 text-[12px]"
+        style={{ borderTop: `1px solid ${rule}`, color: grey }}
+      >
+        <div>
+          {olea.name} · {olea.established}
+        </div>
+        <div className="flex flex-wrap gap-x-4 gap-y-1">
+          <a href={olea.links.privateDining} className="hover:underline underline-offset-4">Private dining</a>
+          <a href={olea.links.giftCards} className="hover:underline underline-offset-4">Gift cards</a>
+          <a href={olea.links.careers} className="hover:underline underline-offset-4">Careers</a>
+          <a href={`https://instagram.com/${olea.social.instagram.replace("@", "")}`} className="hover:underline underline-offset-4">
+            {olea.social.instagram}
+          </a>
+        </div>
+        <div style={{ color: grey }}>{olea.press.slice(0, 3).join(" · ")}</div>
+      </footer>
     </main>
   );
 }
