@@ -4,6 +4,7 @@ const directions = [
   { to: "/site1", n: "I", title: "Artisan", note: "Warm, seasonal, hand-set." },
   { to: "/site2", n: "II", title: "Boutique", note: "Quiet luxury, magazine grid." },
   { to: "/site3", n: "III", title: "Edgy", note: "Loud, brutalist, condensed." },
+  { to: "/site4", n: "IV", title: "Minimalist", note: "Restrained, monochrome, gallery-label." },
 ];
 
 export default function Index() {
