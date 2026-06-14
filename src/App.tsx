@@ -14,6 +14,7 @@ export default function App() {
       <Route path="/site2" element={<Site2Boutique />} />
       <Route path="/site3" element={<Site3Edgy />} />
       <Route path="/site4" element={<Site4Minimalist />} />
+      <Route path="/site5" element={<Site5Grunge />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
