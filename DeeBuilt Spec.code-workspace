@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../medical-provider"
+		},
+		{
+			"path": "../community-planner"
+		}
+	],
+	"settings": {}
+}
