@@ -36,8 +36,6 @@ export function SpecChrome({ children }: { children: ReactNode }) {
           <a
             className="spec-chrome-brand"
             href={specChromeConfig.landingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
             aria-label={`${specChromeConfig.brandName} — all directions`}
           >
             <img className="spec-chrome-brand-logo" src={logoUrl} alt="" />

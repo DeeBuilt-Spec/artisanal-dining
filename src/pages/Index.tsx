@@ -13,8 +13,6 @@ export default function Index() {
         {/* Centered brand lockup — the brand's "home" moment. */}
         <a
           href="https://spec.deebuilt.co/"
-          target="_blank"
-          rel="noopener noreferrer"
           className="mb-14 flex flex-col items-center transition-opacity hover:opacity-70 md:mb-20"
           aria-label="DeeBuilt — all directions"
         >
