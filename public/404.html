@@ -4,11 +4,18 @@
     <meta charset="utf-8" />
     <title>Olea</title>
     <script>
-      // GitHub Pages SPA fallback: preserve the requested path then load index.html
+      // GitHub Pages SPA fallback: preserve the requested path, then load the
+      // app's index.html. On Pages this project is served under a route
+      // (/artisanal-dining/), so we must redirect to that base — NOT the apex
+      // root "/", which belongs to the landing page. We derive the base from
+      // the first path segment, falling back to "/" for local/root serving.
       (function () {
-        var path = window.location.pathname + window.location.search + window.location.hash;
+        var path =
+          window.location.pathname + window.location.search + window.location.hash;
         sessionStorage.setItem("redirect", path);
-        window.location.replace("/");
+        var seg = window.location.pathname.split("/")[1];
+        var base = seg ? "/" + seg + "/" : "/";
+        window.location.replace(base);
       })();
     </script>
   </head>

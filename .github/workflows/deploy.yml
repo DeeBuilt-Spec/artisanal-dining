@@ -1,0 +1,66 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Allow the workflow to publish to GitHub Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one concurrent deployment; cancel in-progress runs on new pushes.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        # This project serves at a ROUTE under the shared subdomain:
+        # https://spec.deebuilt.co/artisanal-dining/. The base path must match
+        # the repo name so assets resolve under that route. The custom domain
+        # (CNAME) lives on the deebuilt-spec.github.io root repo, NOT here — a
+        # project repo must not carry the CNAME or it would hijack the domain.
+        env:
+          VITE_BASE: /artisanal-dining/
+        run: npm run build
+
+      - name: Disable Jekyll
+        # .nojekyll stops Pages from ignoring files/folders that start with an
+        # underscore. The SPA deep-link fallback is handled by public/404.html
+        # (copied into dist by Vite), which stashes the requested path and
+        # redirects to the project base so /site1–/site5 resolve on refresh.
+        run: touch dist/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
