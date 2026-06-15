@@ -1,0 +1,270 @@
+/*
+ * DeeBuilt spec-chrome — scoped styles for the shared header + switcher + footer.
+ *
+ * Everything is namespaced under .spec-chrome-* so it never collides with a
+ * spec's own design. Palette is driven by CSS custom properties with DeeBuilt
+ * defaults; a consuming spec MAY override these on .spec-chrome-root to match its
+ * own direction, but the defaults are the canonical DeeBuilt brand.
+ *
+ * Layout: a minimal logo-only sticky top header + a footer credit, plus a
+ * FLOATING bottom-center switcher (kept at the bottom for thumb reach on mobile).
+ */
+
+.spec-chrome-root {
+  /* DeeBuilt brand palette — override per-spec via CSS vars if desired. */
+  --spec-paper: 253, 252, 251;     /* #fdfcfb, as r,g,b for rgba() translucency */
+  --spec-ink: #1a1c19;
+  --spec-muted: #6b705c;
+  --spec-soft: #7a7a7a;
+  --spec-accent: #2f4f46;
+  --spec-hair: rgba(26, 28, 25, 0.12);
+  --spec-serif: "Fraunces", Georgia, serif;
+  --spec-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --spec-mono: ui-monospace, Menlo, Consolas, monospace;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.spec-chrome-main {
+  flex: 1 1 auto;
+}
+
+/* ---- Header: logo only, sticky, mostly-opaque --------------------------- */
+
+.spec-chrome-header {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  padding: 10px clamp(14px, 4vw, 32px);
+  /* A smidge more opaque than before — present, barely see-through. */
+  background: rgba(var(--spec-paper), 0.95);
+  backdrop-filter: saturate(180%) blur(12px);
+  -webkit-backdrop-filter: saturate(180%) blur(12px);
+  border-bottom: 1px solid var(--spec-hair);
+}
+
+.spec-chrome-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--spec-ink);
+  flex-shrink: 0;
+  transition: opacity 0.15s ease;
+}
+.spec-chrome-brand:hover {
+  opacity: 0.7;
+}
+.spec-chrome-brand-logo {
+  height: 38px;
+  width: auto;
+  display: block;
+}
+.spec-chrome-brand-name {
+  font-family: var(--spec-serif);
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+/* ---- Floating switcher (bottom-center pill) ----------------------------- */
+
+.spec-chrome-switcher {
+  position: fixed;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  z-index: 1000;
+  max-width: calc(100vw - 24px);
+  font-family: var(--spec-sans);
+}
+
+.spec-chrome-switcher-bar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgb(var(--spec-paper));
+  border: 1px solid var(--spec-hair);
+  border-radius: 999px;
+  box-shadow: 0 14px 36px -18px rgba(26, 28, 25, 0.45);
+  padding: 6px 8px;
+}
+
+.spec-chrome-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--spec-ink);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s ease;
+}
+.spec-chrome-arrow:hover {
+  background: rgba(26, 28, 25, 0.06);
+}
+.spec-chrome-arrow:disabled,
+.spec-chrome-arrow[aria-disabled="true"] {
+  color: rgba(26, 28, 25, 0.22);
+  cursor: default;
+  pointer-events: none;
+}
+
+.spec-chrome-current {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  font-family: var(--spec-sans);
+  color: var(--spec-ink);
+  max-width: 62vw;
+  touch-action: manipulation;
+}
+.spec-chrome-current-label {
+  font-family: var(--spec-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--spec-muted);
+  flex-shrink: 0;
+}
+.spec-chrome-current-name {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.spec-chrome-caret {
+  font-size: 10px;
+  color: var(--spec-muted);
+  flex-shrink: 0;
+  transition: transform 0.15s ease;
+}
+.spec-chrome-caret[data-open="true"] {
+  transform: rotate(180deg);
+}
+
+/* ---- Dropdown panel (opens UPWARD, above the bar) ----------------------- */
+
+.spec-chrome-panel {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 360px;
+  max-width: calc(100vw - 24px);
+  max-height: 70vh;
+  overflow-y: auto;
+  background: rgb(var(--spec-paper));
+  border: 1px solid var(--spec-hair);
+  border-radius: 14px;
+  box-shadow: 0 24px 60px -24px rgba(26, 28, 25, 0.4);
+  padding: 10px 0;
+}
+.spec-chrome-group-title {
+  padding: 12px 18px 6px;
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--spec-muted);
+}
+.spec-chrome-item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 18px;
+  text-decoration: none;
+  color: var(--spec-ink);
+  transition: background 0.12s ease;
+}
+.spec-chrome-item:hover {
+  background: rgba(26, 28, 25, 0.04);
+}
+.spec-chrome-item[data-active="true"] {
+  background: rgba(26, 28, 25, 0.06);
+}
+.spec-chrome-item-label {
+  font-family: var(--spec-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--spec-muted);
+  min-width: 56px;
+  flex-shrink: 0;
+}
+.spec-chrome-item-name {
+  font-size: 14.5px;
+}
+.spec-chrome-item-current {
+  color: var(--spec-muted);
+  font-size: 12px;
+}
+.spec-chrome-panel-footer {
+  border-top: 1px solid var(--spec-hair);
+  margin-top: 6px;
+  padding-top: 6px;
+}
+.spec-chrome-panel-link {
+  display: block;
+  padding: 10px 18px;
+  text-decoration: none;
+  color: var(--spec-muted);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+.spec-chrome-panel-link:hover {
+  color: var(--spec-ink);
+}
+
+/* ---- Footer (credit + deebuilt.co link) --------------------------------- */
+/* Extra bottom padding so the floating switcher never overlaps the footer. */
+
+.spec-chrome-footer {
+  border-top: 1px solid var(--spec-hair);
+  background: rgba(var(--spec-paper), 0.6);
+  font-family: var(--spec-sans);
+}
+.spec-chrome-footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 26px clamp(14px, 4vw, 32px) 96px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--spec-soft);
+}
+.spec-chrome-footer-credit {
+  letter-spacing: 0.02em;
+}
+.spec-chrome-footer-sep {
+  color: var(--spec-hair);
+}
+.spec-chrome-footer-link {
+  color: var(--spec-accent);
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid rgba(47, 79, 70, 0.3);
+  padding-bottom: 1px;
+}
+.spec-chrome-footer-link:hover {
+  border-bottom-color: var(--spec-accent);
+}
